@@ -34,9 +34,18 @@ export type HubEvent = {
   organizer: string
   price_member: number | null
   price_nonmember: number | null
+  price_note_de?: string
+  price_note_en?: string
+  /** Free member tickets from VDE's limited contingent (trade fairs, congresses) */
+  tickets_url?: string
+  /** Practical note, e.g. "Venue and time to be announced" */
+  note_de?: string
+  note_en?: string
+  /** Official event page */
+  link?: { url: string; label_de: string; label_en: string }
   language: string
   status: Status
-  source: 'notion' | 'demo' | 'submitted'
+  source: 'notion' | 'hub' | 'submitted'
   cover: number
   added: string
   recap?: Recap
@@ -70,15 +79,14 @@ function parseISO(s: string): Date {
   return new Date(y, m - 1, d)
 }
 
+/** VDE date style: "27.10.2026" and "26.10.2026 - 30.10.2026" (English: "27 Oct 2026"). */
 export function formatDateRange(e: Pick<HubEvent, 'start' | 'end'>, lang: Lang): string {
-  const locale = lang === 'de' ? 'de-DE' : 'en-GB'
-  const s = parseISO(e.start)
-  const full: Intl.DateTimeFormatOptions = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }
-  if (e.end === e.start) return s.toLocaleDateString(locale, full)
-  const en = parseISO(e.end)
-  const sameYear = s.getFullYear() === en.getFullYear()
-  const left = s.toLocaleDateString(locale, { day: 'numeric', month: 'short', ...(sameYear ? {} : { year: 'numeric' }) })
-  return `${left} – ${en.toLocaleDateString(locale, { day: 'numeric', month: 'short', year: 'numeric' })}`
+  const fmtDate = (d: Date) =>
+    lang === 'de'
+      ? d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })
+      : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+  const s = fmtDate(parseISO(e.start))
+  return e.end === e.start ? s : `${s} - ${fmtDate(parseISO(e.end))}`
 }
 
 export function formatPrice(n: number | null, lang: Lang): string | null {

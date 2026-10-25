@@ -3,12 +3,9 @@ import type { Dict } from '.'
 const de = {
   title: 'Projekt-Showcase',
   lead: 'Was Studierende und Young Professionals bauen: Robotik, Firmware, Embedded, Hackathon-Ergebnisse. Zum Nachmachen, Mitmachen und Kontakte knüpfen.',
-  sampleNote: 'Alle Projekte sind Beispieleinträge; Teams und Links sind erfunden.',
   filter: 'Nach Thema filtern',
   allTags: 'Alle',
   results: '{n} Projekte',
-  link: 'Zum Projekt',
-  linkNote: '(Platzhalter-Link)',
   tags: { robotik: 'Robotik', embedded: 'Embedded', firmware: 'Firmware', hackathon: 'Hackathon', iot: 'IoT', energie: 'Energie', fpga: 'FPGA' } as Record<string, string>,
   form: {
     title: 'Projekt einreichen',
@@ -21,7 +18,7 @@ const de = {
     contact: 'Kontakt-E-Mail',
     required: 'Pflichtfeld',
     submit: 'Projekt einreichen',
-    done: 'Danke! Das Projekt wäre jetzt in der Prüfung. (Demo: nichts wurde gespeichert oder versendet.)',
+    done: 'Danke! Dein Projekt ist eingereicht und erscheint nach kurzer Prüfung im Showcase.',
     again: 'Weiteres Projekt einreichen',
   },
 }
@@ -29,12 +26,9 @@ const de = {
 const en: typeof de = {
   title: 'Project showcase',
   lead: 'What students and young professionals build: robotics, firmware, embedded, hackathon results. To copy, join in and connect.',
-  sampleNote: 'All projects are sample entries; teams and links are made up.',
   filter: 'Filter by topic',
   allTags: 'All',
   results: '{n} projects',
-  link: 'View project',
-  linkNote: '(placeholder link)',
   tags: { robotik: 'Robotics', embedded: 'Embedded', firmware: 'Firmware', hackathon: 'Hackathon', iot: 'IoT', energie: 'Energy', fpga: 'FPGA' },
   form: {
     title: 'Submit a project',
@@ -47,7 +41,7 @@ const en: typeof de = {
     contact: 'Contact email',
     required: 'required',
     submit: 'Submit project',
-    done: 'Thanks! The project would now be under review. (Demo: nothing was stored or sent.)',
+    done: 'Thank you! Your project has been submitted and will appear in the showcase after a short review.',
     again: 'Submit another project',
   },
 }

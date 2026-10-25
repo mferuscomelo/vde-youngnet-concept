@@ -33,6 +33,7 @@ export default function App() {
       <Route path="/" element={<Navigate to={`/${preferredLang()}`} replace />} />
       <Route path="/:lang" element={<LangRoot />}>
         <Route index element={<Home />} />
+        <Route path="fuer/:group" element={page(() => import('./pages/Zielgruppe'))} />
         <Route path="events" element={page(() => import('./pages/Events'))} />
         <Route path="events/:slug" element={page(() => import('./pages/EventDetail'))} />
         <Route path="einreichen" element={page(() => import('./pages/Submit'))} />

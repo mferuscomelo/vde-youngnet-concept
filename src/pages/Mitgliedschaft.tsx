@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { PageHeader, SampleBadge, Todo } from '../components/Badges'
+import { PageHeader } from '../components/Badges'
 import { fmt, useLang, useLp, useT } from '../i18n'
 import { membership } from '../i18n/membership'
 import { useDemo } from '../lib/demoStore'
@@ -21,36 +21,37 @@ export default function Mitgliedschaft() {
       <section aria-labelledby="ms-benefits">
         <h2 id="ms-benefits">{t.benefitsTitle}</h2>
         <div className="grid">
-          {t.benefits.map(([icon, h, p]) => (
+          {t.benefits.map(([h, p]) => (
             <div key={h} className="card tile">
-              <span className="tile-icon" aria-hidden="true">{icon}</span>
-              <h3>{h}</h3>
-              <p className="muted" style={{ margin: 0 }}>{p}</p>
+              <h3 className="list-head">{h}</h3>
+              <p>{p}</p>
             </div>
           ))}
         </div>
-        <p className="small muted" style={{ marginTop: 'var(--space-3)' }}>{t.benefitsNote}</p>
+        <p className="small muted" style={{ marginTop: 'var(--space-5)' }}>{t.benefitsNote}</p>
       </section>
 
-      <section className="section" aria-labelledby="ms-fees">
+      <section className="section stack" aria-labelledby="ms-fees">
         <h2 id="ms-fees">{t.feesTitle}</h2>
-        <div className="grid">
-          {[t.feeStudents, t.feeYp].map((label) => (
-            <div key={label} className="card card-muted stack" style={{ gap: 'var(--space-2)' }}>
-              <h3>{label}</h3>
-              <p style={{ margin: 0 }}><Todo>{t.feeTodo}</Todo> <span className="muted">{t.perYear}</span></p>
+        <div className="grid-3">
+          {([[t.feeStudents, 22, null, t.joinStudents, 'https://account.vde.com/Cockpit?context=jm'], [t.feeYp, 49, t.feeYpNote, t.joinYp, 'https://account.vde.com/Cockpit?context=pm']] as const).map(([label, fee, note, cta, href]) => (
+            <div key={label} className="card stack" style={{ gap: 'var(--space-3)' }}>
+              <h3 className="list-head">{label}</h3>
+              {note && <p className="small muted" style={{ margin: 0 }}>{note}</p>}
+              <p className="stat" style={{ margin: 0 }}>{formatPrice(fee, lang)} <span className="small muted" style={{ fontWeight: 'var(--fw-roman)' }}>{t.perYear}</span></p>
+              <p style={{ margin: 0 }}>{t.feeFirstYear}</p>
+              <a className="btn btn-cta" href={href} target="_blank" rel="noopener noreferrer">
+                {cta}<span className="visually-hidden"> {t.external}</span>
+              </a>
             </div>
           ))}
         </div>
-        <p className="small muted" style={{ marginTop: 'var(--space-3)' }}>{t.feesNote}</p>
-        <a className="btn btn-primary" href="https://www.vde.com/de/mitgliedschaft" target="_blank" rel="noopener noreferrer">
-          {t.join} ↗<span className="visually-hidden"> {t.external}</span>
-        </a>
+        <p className="small muted">{t.feesNote}</p>
       </section>
 
       <section className="section" aria-labelledby="ms-cheaper">
         <h2 id="ms-cheaper">{t.cheaperTitle}</h2>
-        <p className="muted">{t.cheaperLead}</p>
+        <p>{t.cheaperLead}</p>
         {cheaper.length === 0 ? (
           <p>{t.cheaperNone}</p>
         ) : (
@@ -64,7 +65,6 @@ export default function Mitgliedschaft() {
                   <tr key={e.id}>
                     <td>
                       <Link to={lp(`/events/${e.slug}`)}>{title(e, lang)}</Link>{' '}
-                      {e.source === 'demo' && <SampleBadge />}
                     </td>
                     <td>{formatDateRange(e, lang)}</td>
                     <td><strong>{formatPrice(e.price_member, lang)}</strong></td>

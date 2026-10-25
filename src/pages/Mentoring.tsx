@@ -1,12 +1,10 @@
 import { useState, type FormEvent } from 'react'
 import { PageHeader } from '../components/Badges'
 import { fmt, useT } from '../i18n'
-import { common } from '../i18n/common'
 import { mentoring } from '../i18n/mentoring'
 
 export default function Mentoring() {
   const t = useT(mentoring)
-  const c = useT(common)
   // Session-only: lives in React state, gone on reload.
   const [done, setDone] = useState<{ name: string; role: 'mentee' | 'mentor' } | null>(null)
   const req = <span className="muted small"> ({t.required})</span>
@@ -25,8 +23,8 @@ export default function Mentoring() {
         <h2 id="m-pairs">{t.pairsTitle}</h2>
         <div className="grid-2">
           {t.pairs.map((p) => (
-            <div key={p.from} className="card stack" style={{ gap: 'var(--space-2)' }}>
-              <h3 style={{ margin: 0 }}>{p.from} <span aria-hidden="true">↔</span><span className="visually-hidden"> + </span> {p.to}</h3>
+            <div key={p.from} className="card stack" style={{ gap: 'var(--space-3)' }}>
+              <h3 className="panel-title list-head">{p.from} + {p.to}</h3>
               <p style={{ margin: 0 }}>{p.text}</p>
             </div>
           ))}
@@ -55,12 +53,11 @@ export default function Mentoring() {
         <h2 id="m-form">{t.formTitle}</h2>
         {done ? (
           <div className="stack">
-            <p className="notice notice-success" role="status">{fmt(t.done, { name: done.name, role: done.role === 'mentor' ? t.mentor : t.mentee })}</p>
+            <p className="notice" role="status">{fmt(t.done, { name: done.name, role: done.role === 'mentor' ? t.mentor : t.mentee })}</p>
             <button type="button" className="btn" onClick={() => setDone(null)}>{t.again}</button>
           </div>
         ) : (
           <form onSubmit={onSubmit} className="stack">
-            <p className="notice notice-info small">{c.demoOnly}</p>
             <fieldset className="field">
               <legend>{t.role}{req}</legend>
               <label className="checkbox"><input type="radio" name="role" value="mentee" required defaultChecked /> {t.roleMentee}</label>
@@ -80,7 +77,7 @@ export default function Mentoring() {
               <div className="field span-2"><label htmlFor="m-goals">{t.goals}</label><textarea id="m-goals" name="goals" /></div>
             </div>
             <label className="checkbox"><input type="checkbox" name="online" defaultChecked /> {t.online}</label>
-            <div><button type="submit" className="btn btn-primary">{t.submit}</button></div>
+            <div><button type="submit" className="btn btn-cta">{t.submit}</button></div>
           </form>
         )}
       </section>

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { PageHeader, SampleBadge, Todo } from '../components/Badges'
+import { PageHeader } from '../components/Badges'
 import { MapView } from '../components/MapView'
 import { useLang, useT } from '../i18n'
 import { directory } from '../i18n/directory'
@@ -8,7 +8,7 @@ import { BVS, CONTACTS, HSGS, type Contact } from '../data/directory'
 import { PLACES } from '../lib/places'
 
 const SCOPES = ['region', 'bv', 'hsg'] as const
-const SCOPE_COLOR = { region: 'var(--color-text)', bv: 'var(--color-accent)', hsg: 'var(--color-aud-students)' }
+const SCOPE_COLOR = { region: 'var(--color-grey-dark)', bv: 'var(--color-blue)', hsg: 'var(--color-light-blue)' }
 
 export default function Ansprechpartner() {
   const t = useT(directory)
@@ -24,7 +24,7 @@ export default function Ansprechpartner() {
   return (
     <>
       <PageHeader title={t.contacts.title} lead={t.contacts.lead}>
-        <p className="notice notice-warning small"><SampleBadge kind="placeholder" /> {t.contacts.privacy}</p>
+        <p className="notice small"> {t.contacts.privacy}</p>
       </PageHeader>
 
       <div className="stack">
@@ -42,7 +42,7 @@ export default function Ansprechpartner() {
             lng: PLACES[c.city].lng,
             label: `${role(c)} – ${refLabel(c)}`,
             color: SCOPE_COLOR[c.scope],
-            popup: <><strong>{t.nameTba}</strong><br />{role(c)}<br />{refLabel(c)}</>,
+            popup: <><strong>{refLabel(c)}</strong><br />{role(c)}</>,
           }))}
         />
 
@@ -59,8 +59,10 @@ export default function Ansprechpartner() {
                     <tr key={c.id}>
                       <td>{refLabel(c)}</td>
                       <td>
-                        <strong>{t.nameTba}</strong><br />
-                        <span className="small muted">{role(c)} · {t.contacts.email}</span>
+                        <strong>{role(c)}</strong><br />
+                        {c.email && <><a href={`mailto:${c.email}`}>{c.email}</a><br /></>}
+                        {c.phone && <span className="small muted">{c.phone}</span>}
+                        {!c.email && c.url && <a href={c.url} target="_blank" rel="noopener noreferrer">{t.contacts.page}</a>}
                       </td>
                       <td>{PLACES[c.city].label}</td>
                     </tr>
@@ -70,7 +72,6 @@ export default function Ansprechpartner() {
             </div>
           </section>
         ))}
-        <p className="small"><Todo>{t.todoSource}</Todo></p>
       </div>
     </>
   )

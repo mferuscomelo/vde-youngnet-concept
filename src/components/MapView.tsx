@@ -1,7 +1,7 @@
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import type { ReactNode } from 'react'
-import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
+import { AttributionControl, MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
 import { fmt, useT } from '../i18n'
 import { common } from '../i18n/common'
 import { GERMANY_CENTER } from '../lib/places'
@@ -10,7 +10,7 @@ import { GERMANY_CENTER } from '../lib/places'
 const icon = (color: string) =>
   L.divIcon({
     className: '',
-    html: `<span style="display:block;width:18px;height:18px;border-radius:50%;background:${color};border:3px solid #fff;box-shadow:0 0 0 1px #111827"></span>`,
+    html: `<span style="display:block;width:18px;height:18px;border-radius:50%;background:#fff;border:5px solid ${color};box-shadow:0 1px 6px rgb(0 0 0 / 0.3)"></span>`,
     iconSize: [18, 18],
     iconAnchor: [9, 9],
     popupAnchor: [0, -10],
@@ -36,13 +36,15 @@ export function MapView({ points, missing = 0, height }: { points: MapPoint[]; m
   return (
     <div className="stack" style={{ gap: 'var(--space-2)' }}>
       <div role="region" aria-label={t.map.label}>
-        <MapContainer center={GERMANY_CENTER} zoom={6} scrollWheelZoom={false} className="map" style={height ? { height } : undefined}>
+        <MapContainer center={GERMANY_CENTER} zoom={window.innerWidth < 640 ? 5 : 6} attributionControl={false} scrollWheelZoom={false} className="map" style={height ? { height } : undefined}>
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
+          {/* OSM attribution is required; Leaflet's own prefix is dropped */}
+          <AttributionControl prefix={false} />
           {placed.map((p) => (
-            <Marker key={p.id} position={[p.lat, p.lng]} icon={icon(p.color ?? 'var(--color-accent)')} title={p.label} alt={p.label}>
+            <Marker key={p.id} position={[p.lat, p.lng]} icon={icon(p.color ?? 'var(--color-blue)')} title={p.label} alt={p.label}>
               <Popup>{p.popup}</Popup>
             </Marker>
           ))}

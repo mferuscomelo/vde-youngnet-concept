@@ -1,13 +1,12 @@
 import { useId, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { PageHeader, SampleBadge } from '../components/Badges'
+import { PageHeader } from '../components/Badges'
 import { useLp, useT } from '../i18n'
-import { common } from '../i18n/common'
+import { MEMBER_SERVICE, PRESS_OFFICE, YOUNG_NET_OFFICE } from '../data/directory'
 import { info } from '../i18n/info'
 
 export default function Kontakt() {
   const t = useT(info).contact
-  const c = useT(common)
   const lp = useLp()
   const id = useId()
   const [sent, setSent] = useState(false)
@@ -15,39 +14,36 @@ export default function Kontakt() {
     e.preventDefault()
     setSent(true)
   }
-  const addresses: [string, string][] = [
-    [t.general, 'kontakt@example.org'],
-    [t.events, 'events@example.org'],
-    [t.press, 'presse@example.org'],
+  const addresses: [string, string, string][] = [
+    [t.general, YOUNG_NET_OFFICE.email, YOUNG_NET_OFFICE.phone],
+    [t.events, YOUNG_NET_OFFICE.email, ''],
+    [t.press, PRESS_OFFICE.email, ''],
+    [t.members, MEMBER_SERVICE.email, MEMBER_SERVICE.phone],
   ]
   return (
     <>
       <PageHeader title={t.title} lead={t.lead} />
       <div className="grid-2">
         <section className="stack" aria-labelledby={`${id}-addr`}>
-          <div className="row">
-            <h2 id={`${id}-addr`} style={{ margin: 0 }}>{t.addrTitle}</h2>
-            <SampleBadge kind="placeholder" />
-          </div>
+          <h2 id={`${id}-addr`} style={{ margin: 0 }}>{t.addrTitle}</h2>
+          <p style={{ margin: 0 }}><strong>{YOUNG_NET_OFFICE.name}</strong><br />{YOUNG_NET_OFFICE.address}</p>
           <dl className="kv">
-            {addresses.map(([label, mail]) => (
-              <div key={mail} style={{ display: 'contents' }}>
+            {addresses.map(([label, mail, phone]) => (
+              <div key={label} style={{ display: 'contents' }}>
                 <dt>{label}</dt>
-                <dd>{mail} <span className="small muted">({c.placeholder})</span></dd>
+                <dd><a href={`mailto:${mail}`}>{mail}</a>{phone && <><br /><span className="small muted">{phone}</span></>}</dd>
               </div>
             ))}
           </dl>
-          <p className="small muted">{t.placeholderNote}</p>
           <div>
-            <Link className="btn" to={lp('/ansprechpartner')}>{t.perRegion} →</Link>
+            <Link className="more" to={lp('/ansprechpartner')}>{t.perRegion}</Link>
           </div>
         </section>
 
         <section className="card stack" aria-labelledby={`${id}-form`}>
           <h2 id={`${id}-form`}>{t.formTitle}</h2>
-          <p className="small muted">{c.demoOnly}</p>
           {sent ? (
-            <p className="notice notice-success" role="status">{t.sent}</p>
+            <p className="notice" role="status">{t.sent}</p>
           ) : (
             <form onSubmit={onSubmit} className="form-grid">
               <div className="field">
@@ -68,7 +64,7 @@ export default function Kontakt() {
                 <label htmlFor={`${id}-msg`}>{t.message}</label>
                 <textarea id={`${id}-msg`} required />
               </div>
-              <div><button className="btn btn-primary" type="submit">{t.send}</button></div>
+              <div><button className="btn btn-cta" type="submit">{t.send}</button></div>
             </form>
           )}
         </section>

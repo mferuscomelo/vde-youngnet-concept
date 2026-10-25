@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom'
 import { PageHeader } from '../components/Badges'
 import { useLp, useT } from '../i18n'
+import { common } from '../i18n/common'
 import { concept } from '../i18n/concept'
 
 export default function Konzept() {
   const t = useT(concept)
+  const c = useT(common)
   const lp = useLp()
   return (
     <>
@@ -12,7 +14,7 @@ export default function Konzept() {
 
       <section className="prose stack" aria-labelledby="k-who">
         <h2 id="k-who">{t.whoTitle}</h2>
-        <p className="notice notice-warning">{t.who}</p>
+        <p className="notice">{t.who}</p>
       </section>
 
       <section className="section" aria-labelledby="k-problems">
@@ -20,8 +22,8 @@ export default function Konzept() {
         <div className="grid">
           {t.problems.map(([h, p]) => (
             <div key={h} className="card">
-              <h3>{h}</h3>
-              <p className="muted" style={{ margin: 0 }}>{p}</p>
+              <h3 className="list-head">{h}</h3>
+              <p style={{ margin: 0 }}>{p}</p>
             </div>
           ))}
         </div>
@@ -31,9 +33,10 @@ export default function Konzept() {
         <h2 id="k-shows">{t.showsTitle}</h2>
         <div className="grid">
           {t.shows.map(([h, to, p]) => (
-            <Link key={h} to={lp(to)} className="card card-link">
-              <h3>{h} →</h3>
-              <p className="muted" style={{ margin: 0 }}>{p}</p>
+            <Link key={h} to={lp(to)} className="card card-link tile">
+              <h3 className="list-head">{h}</h3>
+              <p>{p}</p>
+              <span className="tile-cta"><span className="btn btn-cta">{c.more}</span></span>
             </Link>
           ))}
         </div>
@@ -53,7 +56,7 @@ export default function Konzept() {
       <section className="section card card-muted stack" aria-labelledby="k-asks">
         <h2 id="k-asks">{t.asksTitle}</h2>
         <ol>{t.asks.map((a) => <li key={a}>{a}</li>)}</ol>
-        <div><Link className="btn btn-primary" to={lp('/')}>{t.start}</Link></div>
+        <div><Link className="btn btn-cta" to={lp('/')}>{t.start}</Link></div>
       </section>
     </>
   )

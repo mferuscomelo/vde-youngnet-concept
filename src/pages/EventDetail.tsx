@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { AudienceBadge, SampleBadge, Todo } from '../components/Badges'
+import { AudienceBadge } from '../components/Badges'
 import { AddToCalendar, BookmarkButton, EventCard, useLocationLabel } from '../components/EventBits'
+import { Icon } from '../components/Icon'
 import { MapView } from '../components/MapView'
-import { fmt, useLang, useLp, useT } from '../i18n'
+import { useLang, useLp, useT } from '../i18n'
 import { common } from '../i18n/common'
 import { eventsT } from '../i18n/events'
 import { taxonomy } from '../i18n/taxonomy'
@@ -38,7 +39,7 @@ export default function EventDetail() {
     return (
       <div className="stack">
         <p className="notice">{d.notFound}</p>
-        <Link to={lp('/events')}>← {c.allEvents}</Link>
+        <Link className="back" to={lp('/events')}><Icon name="chevron-left" />{c.allEvents}</Link>
       </div>
     )
   }
@@ -46,64 +47,59 @@ export default function EventDetail() {
   const past = isPast(e)
   const pm = formatPrice(e.price_member, lang)
   const pn = formatPrice(e.price_nonmember, lang)
+  const note = lang === 'en' ? e.note_en : e.note_de
+  const priceNote = lang === 'en' ? e.price_note_en : e.price_note_de
   const showTravel = !past && e.format === 'praesenz' && ['kongress', 'yp-meetup', 'junges-forum'].includes(e.type)
 
   return (
     <article className="stack">
-      <Link to={lp(past ? '/events?tab=archiv' : '/events')} className="small">← {c.allEvents}</Link>
-      {e.status !== 'published' && <p className="notice notice-warning">{d.pendingNote}</p>}
+      <Link to={lp(past ? '/events?tab=archiv' : '/events')} className="back"><Icon name="chevron-left" />{c.allEvents}</Link>
+      {e.status !== 'published' && <p className="notice">{d.pendingNote}</p>}
 
-      <div className={`cover-${e.cover}`} style={{ borderRadius: 'var(--radius-lg)', padding: 'var(--space-5)', color: 'var(--color-text-inverse)' }}>
-        <div className="row" style={{ gap: 6, marginBottom: 'var(--space-3)' }}>
-          <span className="badge badge-neutral">{tx.type[e.type]}</span>
-          <span className="badge badge-neutral">{tx.format[e.format]}</span>
+      <header className="stack" style={{ gap: 'var(--space-3)' }}>
+        <div className="badges">
+          <AudienceBadge audience={e.audience} />
         </div>
-        <h1 style={{ margin: 0, maxWidth: '24ch' }}>{title(e, lang)}</h1>
-        <p style={{ margin: 'var(--space-2) 0 0', fontWeight: 600 }}>{formatDateRange(e, lang)} · {loc(e)}</p>
-      </div>
+        <p className="meta-line"><span>{formatDateRange(e, lang)}</span><span>{loc(e)}</span><span>{tx.type[e.type]}</span></p>
+        <h1 style={{ margin: 0, maxWidth: '30ch' }}>{title(e, lang)}</h1>
+      </header>
 
       <div className="grid-2 wide-left">
         <div className="stack">
-          <section className="card stack" aria-labelledby="forwhom" style={{ borderWidth: 2, borderColor: `var(--color-aud-${e.audience === 'young-professionals' ? 'yp' : e.audience})` }}>
+          <section className="notice stack" aria-labelledby="forwhom">
             <div className="row-between">
-              <h2 id="forwhom" style={{ margin: 0, fontSize: '1.25rem' }}>{d.forWhom}</h2>
+              <h2 id="forwhom" className="panel-title">{d.forWhom}</h2>
               <AudienceBadge audience={e.audience} />
             </div>
             <p style={{ margin: 0 }}>{d.forWhomText[e.audience]}</p>
             {d.notFor[e.audience] && <p className="small muted" style={{ margin: 0 }}>{d.notFor[e.audience]}</p>}
           </section>
 
-          <div className="prose">
-            <p>{description(e, lang)} {e.source !== 'submitted' && <SampleBadge kind="sampleText" />}</p>
-            <p className="small muted">{d.source[e.source]}</p>
+          <div className="prose stack" style={{ gap: 'var(--space-4)' }}>
+            {description(e, lang).split('\n\n').map((para) => <p key={para}>{para}</p>)}
+            {note && <p className="muted">{note}</p>}
+            {e.link && (
+              <a className="more" href={e.link.url} target="_blank" rel="noopener noreferrer">
+                {d.officialPage}: {lang === 'en' ? e.link.label_en : e.link.label_de}
+              </a>
+            )}
           </div>
 
           {e.recap && (
             <section className="card stack" aria-labelledby="recap-h">
-              <div className="row-between">
-                <h2 id="recap-h" style={{ margin: 0, fontSize: '1.25rem' }}>{d.recapTitle}</h2>
-                <SampleBadge />
-              </div>
-              <p className="stat">{e.recap.participants} <span className="small muted" style={{ fontWeight: 400 }}>{d.participants}</span></p>
+              <h2 id="recap-h" className="panel-title list-head">{d.recapTitle}</h2>
+              <p className="stat">{e.recap.participants} <span className="small muted" style={{ fontWeight: 'var(--fw-roman)' }}>{d.participants}</span></p>
               <p>{lang === 'en' ? e.recap.text_en : e.recap.text_de}</p>
-              <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 140px), 1fr))' }}>
-                {Array.from({ length: e.recap.photos }, (_, i) => (
-                  <div key={i} role="img" aria-label={fmt(d.photoAlt, { n: i + 1 })} className={`cover-${((e.cover + i) % 4) + 1}`}
-                    style={{ aspectRatio: '4 / 3', borderRadius: 'var(--radius-md)', display: 'grid', placeItems: 'center', color: 'var(--color-text-inverse)', fontSize: '0.75rem' }}>
-                    <span aria-hidden="true">📷 {i + 1}</span>
-                  </div>
-                ))}
-              </div>
-              <blockquote style={{ margin: 0, paddingLeft: 'var(--space-3)', borderLeft: '4px solid var(--color-border-strong)' }}>
+              <blockquote className="quote">
                 <p style={{ margin: 0 }}>{lang === 'en' ? e.recap.quote_en : e.recap.quote_de}</p>
-                <footer className="small muted">— {d.quoteBy}</footer>
+                <footer className="small muted">{d.quoteBy}</footer>
               </blockquote>
             </section>
           )}
 
           {pt && <MapView points={[{ id: e.id, ...pt, label: loc(e), popup: loc(e) }]} height={260} />}
-          {e.format === 'online' && <p className="notice notice-info">{d.onlineNote}</p>}
-          {e.format === 'dezentral' && <p className="notice notice-info">{d.dezentralNote}</p>}
+          {e.format === 'online' && <p className="notice">{d.onlineNote}</p>}
+          {e.format === 'dezentral' && <p className="notice">{d.dezentralNote}</p>}
         </div>
 
         <aside className="stack">
@@ -121,10 +117,19 @@ export default function EventDetail() {
             {e.fachgesellschaft && (<><dt>{d.fg}</dt><dd><Link to={lp('/fachgesellschaften')}>{e.fachgesellschaft}</Link></dd></>)}
             <dt>{d.price}</dt>
             <dd>
-              {pm != null && pn != null ? (
+              {priceNote ? (
+                priceNote
+              ) : e.tickets_url ? (
+                <>
+                  {d.freeTickets}
+                  <br /><a href={e.tickets_url} target="_blank" rel="noopener noreferrer">{d.freeTicketsLink}</a>
+                </>
+              ) : pm != null && pm === pn ? (
+                pm
+              ) : pm != null && pn != null ? (
                 <>{c.members}: <strong>{pm}</strong><br />{c.nonMembers}: {pn}</>
               ) : (
-                <>{c.priceTba} {e.source === 'notion' && <Todo>Preise ergänzen</Todo>}</>
+                c.priceTba
               )}
             </dd>
             <dt>{d.language}</dt>
@@ -132,24 +137,24 @@ export default function EventDetail() {
           </dl>
 
           {!past && (
-            <div className="stack" style={{ gap: 'var(--space-2)' }}>
-              <button type="button" className="btn btn-primary" onClick={() => setSignedUp(true)} disabled={e.status !== 'published'}>{d.signup}</button>
-              {signedUp && <p className="notice notice-success small" role="status">{d.signupDone}</p>}
-              <BookmarkButton event={e} small={false} />
+            <div className="btn-col">
+              <button type="button" className="btn btn-cta" onClick={() => setSignedUp(true)} disabled={e.status !== 'published'}>{d.signup}</button>
+              {signedUp && <p className="notice small" role="status">{d.signupDone}</p>}
+              <BookmarkButton event={e} />
               <AddToCalendar event={e} />
             </div>
           )}
 
-          <div className="card card-muted stack" style={{ gap: 'var(--space-2)' }}>
-            <strong>{d.memberCta}</strong>
-            <Link to={lp('/mitgliedschaft')}>{d.memberLink} →</Link>
+          <div className="card stack" style={{ gap: 'var(--space-3)' }}>
+            <h2 className="panel-title list-head">{d.memberCta}</h2>
+            <Link className="more" to={lp('/mitgliedschaft')}>{d.memberLink}<Icon name="chevron-right" /></Link>
           </div>
 
           {showTravel && (
-            <div className="card stack" style={{ gap: 'var(--space-2)' }}>
-              <strong>🚆 {d.travel}</strong>
-              <span className="small muted">{d.travelText}</span>
-              <Link className="btn btn-sm" to={lp(`/mitfahren?event=${e.slug}`)}>{d.travel} →</Link>
+            <div className="card stack" style={{ gap: 'var(--space-3)' }}>
+              <h2 className="panel-title list-head">{d.travel}</h2>
+              <p style={{ margin: 0 }}>{d.travelText}</p>
+              <Link className="more" to={lp(`/mitfahren?event=${e.slug}`)}>{d.travelLink}<Icon name="chevron-right" /></Link>
             </div>
           )}
         </aside>

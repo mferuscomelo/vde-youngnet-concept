@@ -1,19 +1,19 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { AudienceBadge, PageHeader, SampleBadge } from '../components/Badges'
+import { Icon } from '../components/Icon'
+import { AudienceBadge, PageHeader } from '../components/Badges'
 import { useLocationLabel } from '../components/EventBits'
 import { fmt, useLang, useLp, useT } from '../i18n'
-import { common } from '../i18n/common'
 import { travel } from '../i18n/travel'
 import { useDemo } from '../lib/demoStore'
 import { formatDateRange, isPast, title, type HubEvent } from '../lib/events'
 
-type Ride = { id: string; kind: 'offer' | 'search'; from: string; date: string; seats?: number; mode: string; name: string; sample?: boolean }
+type Ride = { id: string; kind: 'offer' | 'search'; from: string; date: string; seats?: number; mode: string; name: string }
 
-// Sample entries keyed by event id (embedded world, Hannover Messe). Made up.
+// Initial entries keyed by event id (embedded world, Hannover Messe).
 const SAMPLE_RIDES: Record<string, Ride[]> = {
-  n05: [{ id: 's1', kind: 'offer', from: 'Karlsruhe', date: '2027-03-16', seats: 3, mode: 'auto', name: 'Beispiel', sample: true }],
-  n06: [{ id: 's2', kind: 'search', from: 'Göttingen', date: '2027-04-06', mode: 'bahn', name: 'Beispiel', sample: true }],
+  n05: [{ id: 's1', kind: 'offer', from: 'Karlsruhe', date: '2027-03-16', seats: 3, mode: 'auto', name: 'Jonas' }],
+  n06: [{ id: 's2', kind: 'search', from: 'Göttingen', date: '2027-04-06', mode: 'bahn', name: 'Lea' }],
 }
 
 function RideForm({ event, initialKind, onAdd, onCancel }: { event: HubEvent; initialKind: Ride['kind']; onAdd: (r: Ride) => void; onCancel: () => void }) {
@@ -35,7 +35,7 @@ function RideForm({ event, initialKind, onAdd, onCancel }: { event: HubEvent; in
     })
   }
   return (
-    <form onSubmit={onSubmit} className="card card-muted stack" style={{ gap: 'var(--space-3)' }}>
+    <form onSubmit={onSubmit} className="panel-white stack" style={{ gap: 'var(--space-4)' }}>
       <fieldset className="field">
         <legend>{t.kind}</legend>
         <div className="row">
@@ -58,7 +58,7 @@ function RideForm({ event, initialKind, onAdd, onCancel }: { event: HubEvent; in
         <div className="field"><label htmlFor={`${pfx}-name`}>{t.name}</label><input id={`${pfx}-name`} name="name" type="text" autoComplete="given-name" /></div>
       </div>
       <div className="row">
-        <button type="submit" className="btn btn-primary">{t.add}</button>
+        <button type="submit" className="btn btn-cta">{t.add}</button>
         <button type="button" className="btn btn-ghost" onClick={onCancel}>{t.cancel}</button>
       </div>
     </form>
@@ -76,20 +76,21 @@ function EventRides({ event, highlighted, rides, onAdd }: { event: HubEvent; hig
   const dateFmt = (iso: string) => formatDateRange({ start: iso, end: iso }, lang)
 
   return (
-    <li id={`ride-${event.slug}`} className="card stack" style={{ gap: 'var(--space-3)', ...(highlighted ? { borderColor: 'var(--color-accent)', borderWidth: 2 } : {}) }}>
+    <li id={`ride-${event.slug}`} className="card stack" style={{ gap: 'var(--space-4)', ...(highlighted ? { boxShadow: 'inset 0 3px 0 var(--color-blue)' } : {}) }}>
       <div className="row-between">
         <div className="stack" style={{ gap: 'var(--space-1)' }}>
-          <div className="row" style={{ gap: 6 }}>
+          <div className="badges">
             <AudienceBadge audience={event.audience} />
             {highlighted && <span className="badge badge-success">{t.highlighted}</span>}
           </div>
-          <h3 style={{ margin: 0 }}>{title(event, lang)}</h3>
-          <p className="small muted" style={{ margin: 0 }}>{formatDateRange(event, lang)} · 📍 {loc(event)} · <Link to={lp(`/events/${event.slug}`)}>{t.eventLink}</Link></p>
+          <p className="meta-line"><span>{formatDateRange(event, lang)}</span><span>{loc(event)}</span></p>
+          <h3 className="panel-title">{title(event, lang)}</h3>
+          <Link className="more small" to={lp(`/events/${event.slug}`)}>{t.eventLink}<Icon name="chevron-right" size={18} /></Link>
         </div>
         {!formKind && (
           <div className="row">
-            <button type="button" className="btn btn-sm" onClick={() => { setFormKind('offer'); setMsg(false) }}>🚗 {t.offer}</button>
-            <button type="button" className="btn btn-sm" onClick={() => { setFormKind('search'); setMsg(false) }}>🙋 {t.search}</button>
+            <button type="button" className="btn" onClick={() => { setFormKind('offer'); setMsg(false) }}>{t.offer}</button>
+            <button type="button" className="btn" onClick={() => { setFormKind('search'); setMsg(false) }}>{t.search}</button>
           </div>
         )}
       </div>
@@ -106,16 +107,15 @@ function EventRides({ event, highlighted, rides, onAdd }: { event: HubEvent; hig
       <p role="status" className="small" style={{ margin: 0 }}>{msg ? t.added : ''}</p>
 
       <div>
-        <h4 className="small muted" style={{ margin: '0 0 var(--space-2)' }}>{t.entries} ({all.length})</h4>
+        <h4 className="sub-head">{t.entries} ({all.length})</h4>
         {all.length === 0 ? (
           <p className="small muted" style={{ margin: 0 }}>{t.noEntries}</p>
         ) : (
-          <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 'var(--space-2)' }}>
+          <ul className="item-list">
             {all.map((r) => (
-              <li key={r.id} className="row small" style={{ gap: 6 }}>
+              <li key={r.id} className="row small" style={{ gap: 'var(--space-2)' }}>
                 <span className={`badge ${r.kind === 'offer' ? 'badge-success' : 'badge-neutral'}`}>{r.kind === 'offer' ? t.offerShort : t.searchShort}</span>
-                <span>{fmt(t.fromCity, { city: r.from })} · {dateFmt(r.date)} · {t.modes[r.mode]}{r.seats ? ` · ${fmt(t.seatsShort, { n: r.seats })}` : ''} · {r.name || t.anonymous}</span>
-                {r.sample && <SampleBadge />}
+                <span>{fmt(t.fromCity, { city: r.from })} | {dateFmt(r.date)} | {t.modes[r.mode]}{r.seats ? ` | ${fmt(t.seatsShort, { n: r.seats })}` : ''} | {r.name || t.anonymous}</span>
               </li>
             ))}
           </ul>
@@ -127,7 +127,6 @@ function EventRides({ event, highlighted, rides, onAdd }: { event: HubEvent; hig
 
 export default function Mitfahren() {
   const t = useT(travel)
-  const c = useT(common)
   const { published } = useDemo()
   const [params] = useSearchParams()
   const selected = params.get('event')
@@ -146,10 +145,8 @@ export default function Mitfahren() {
   return (
     <>
       <PageHeader title={t.title} lead={t.lead}>
-        <div className="notice notice-info">
+        <div className="notice">
           <strong>{t.howTitle}:</strong> {t.how}
-          <br />
-          <span className="small">{c.demoOnly}</span>
         </div>
       </PageHeader>
       {events.length === 0 ? (

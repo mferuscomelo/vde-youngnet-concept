@@ -1,68 +1,75 @@
 /*
- * Brand slot. Every brand decision (colour, type, radius, spacing) lives here.
- * If VDE adopts the concept, official tokens replace these values; nothing
- * else in the codebase hard-codes colours or fonts.
- * Current values are a neutral placeholder, deliberately NOT VDE corporate design.
+ * Brand slot. Every brand decision (colour, type, radius, spacing) lives here;
+ * nothing else in the codebase hard-codes colours or fonts.
+ *
+ * Values are taken from the computed styles of vde.com/youngnet and
+ * vde.com/veranstaltungen (theme "vde-legacy"), not estimated:
+ *   type    Helvetica Neue W01: Thin for headlines, 55 Roman for body,
+ *           65 Medium for navigation/meta, 75 Bold for buttons and links
+ *   colour  #0069b4 blue, #4a96d2 light blue, #78b7e5 menu marker,
+ *           #76b82a green CTA, #f1f1f1 panels, #c1c7d2 rules,
+ *           #3c434d / #6e7786 / #8a95a7 greys, #c00 error
+ * vde.com serves Helvetica Neue as a licensed webfont. Here it is used when
+ * installed locally (macOS, iOS); elsewhere Inter stands in, as it has the
+ * same thin/medium/bold weight range.
  */
 :root {
-  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* No plain "Helvetica": on Linux it resolves to Nimbus Sans, which has no thin weight */
+  --font-sans: 'Helvetica Neue', 'Inter', Arial, sans-serif;
   --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --fw-thin: 200;
+  --fw-roman: 400;
+  --fw-medium: 500;
+  --fw-bold: 700;
 
-  --color-bg: #ffffff;
-  --color-surface: #f6f7f9;
-  --color-surface-2: #eceef2;
-  --color-border: #d4d8df;
-  --color-border-strong: #9aa1ad;
-  --color-text: #111827;
-  --color-text-muted: #4b5563;
-  --color-text-inverse: #ffffff;
+  --color-blue: #0069b4;
+  --color-light-blue: #4a96d2;
+  --color-marker: #78b7e5;
+  --color-green: #76b82a;
+  --color-green-hover: #5aaf24;
+  --color-slate: #8a95a7;
+  --color-grey-dark: #3c434d;
+  --color-grey-meta: #6e7786;
+  --color-rule: #c1c7d2;
+  --color-panel: #f1f1f1;
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-error: #cc0000;
 
-  --color-accent: #1f4fd1;
-  --color-accent-hover: #173ca3;
-  --color-accent-soft: #e8eefc;
-  --color-focus: #f59e0b;
+  --color-bg: var(--color-white);
+  --color-text: var(--color-black);
+  --color-text-muted: var(--color-grey-meta);
+  --color-text-inverse: var(--color-white);
+  --color-heading: var(--color-blue);
+  --color-link: var(--color-blue);
+  --color-focus: var(--color-light-blue);
 
-  --color-success: #13703a;
-  --color-success-soft: #e3f4ea;
-  --color-warning: #8a5a00;
-  --color-warning-soft: #fff4d6;
-  --color-danger: #b42318;
-  --color-danger-soft: #fde8e6;
+  /* Audience labels: VDE badge colours, always paired with a text label */
+  --color-aud-students: var(--color-blue);
+  --color-aud-yp: var(--color-green);
+  --color-aud-all: var(--color-slate);
 
-  /* Audience colours: always paired with a text label */
-  --color-aud-students: #0f6e6e;
-  --color-aud-students-soft: #dff3f2;
-  --color-aud-yp: #6b3fb3;
-  --color-aud-yp-soft: #efe8fa;
-  --color-aud-all: #374151;
-  --color-aud-all-soft: #eceef2;
+  /* Event picture placeholders (no photos in the prototype): flat VDE colours */
+  --cover-1: var(--color-blue);
+  --cover-2: var(--color-light-blue);
+  --cover-3: var(--color-grey-dark);
+  --cover-4: var(--color-slate);
 
-  --color-banner-bg: #1b1b1b;
-  --color-banner-text: #ffe28a;
-
-  /* Cover templates for submitted events */
-  --cover-1-a: #1f4fd1; --cover-1-b: #0b1f5c;
-  --cover-2-a: #0f6e6e; --cover-2-b: #063434;
-  --cover-3-a: #6b3fb3; --cover-3-b: #2c1652;
-  --cover-4-a: #374151; --cover-4-b: #111827;
-
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 14px;
-  --radius-pill: 999px;
+  --radius-btn: 3px;
+  --radius-input: 5px;
+  --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5'%3E%3Cpath d='M9 5l7 7-7 7'/%3E%3C/svg%3E");
 
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
   --space-4: 16px;
-  --space-5: 24px;
-  --space-6: 32px;
-  --space-7: 48px;
-  --space-8: 64px;
+  --space-5: 20px;
+  --space-6: 30px;
+  --space-7: 40px;
+  --space-8: 60px;
 
-  --shadow-1: 0 1px 2px rgb(17 24 39 / 0.06), 0 1px 3px rgb(17 24 39 / 0.08);
-  --shadow-2: 0 8px 24px rgb(17 24 39 / 0.12);
+  --shadow-popover: 0 1px 35px -5px rgb(0 0 0 / 0.3);
 
-  --container: 1120px;
-  --gutter: 16px;
+  --container: 1170px;
+  --gutter: 15px;
 }

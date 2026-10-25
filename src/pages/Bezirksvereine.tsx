@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { EventCard } from '../components/EventBits'
-import { PageHeader, SampleBadge, Todo } from '../components/Badges'
+import { PageHeader } from '../components/Badges'
 import { MapView } from '../components/MapView'
 import { useLp, useT } from '../i18n'
 import { directory } from '../i18n/directory'
 import { REGIONS, taxonomy } from '../i18n/taxonomy'
-import { BVS } from '../data/directory'
+import { BVS, HSGS } from '../data/directory'
 import { useDemo } from '../lib/demoStore'
 import { isPast } from '../lib/events'
 import { PLACES } from '../lib/places'
@@ -22,17 +22,14 @@ export default function Bezirksvereine() {
 
   return (
     <>
-      <PageHeader title={t.bv.title} lead={t.bv.lead}>
-        <p className="notice notice-warning small"><SampleBadge kind="placeholder" /> {t.placeholderNote} <Todo>{t.todoSource}</Todo></p>
-      </PageHeader>
+      <PageHeader title={t.bv.title} lead={t.bv.lead} />
 
       <div className="stack">
-        <div className="field" style={{ maxWidth: 280 }}>
-          <label htmlFor="bv-region">{t.bv.region}</label>
-          <select id="bv-region" value={region} onChange={(e) => setRegion(e.target.value)}>
-            <option value="">{t.hsg.all}</option>
-            {REGIONS.filter((r) => r !== 'bundesweit').map((r) => <option key={r} value={r}>{tx.region[r]}</option>)}
-          </select>
+        <div className="chips" role="group" aria-label={t.bv.region}>
+          <button type="button" className="chip" aria-pressed={region === ''} onClick={() => setRegion('')}>{t.hsg.all}</button>
+          {REGIONS.filter((r) => r !== 'bundesweit').map((r) => (
+            <button key={r} type="button" className="chip" aria-pressed={region === r} onClick={() => setRegion(r)}>{tx.region[r]}</button>
+          ))}
         </div>
 
         <MapView
@@ -41,7 +38,7 @@ export default function Bezirksvereine() {
             lat: PLACES[b.city].lat,
             lng: PLACES[b.city].lng,
             label: b.name,
-            popup: <><strong>{b.name}</strong><br />{tx.region[b.region]} · {upcoming(b.id).length} Events</>,
+            popup: <><strong>{b.name}</strong><br />{b.address}</>,
           }))}
         />
 
@@ -49,30 +46,32 @@ export default function Bezirksvereine() {
         <ul style={{ listStyle: 'none', padding: 0, margin: 0 }} className="stack">
           {list.map((b) => {
             const ev = upcoming(b.id)
+            const groups = HSGS.filter((h) => h.bv === b.id)
             return (
-              <li key={b.id} className="card stack" id={b.id}>
-                <div className="row-between">
-                  <h3 style={{ margin: 0 }}>{b.name}</h3>
+              <li key={b.id} className="stack section-item" id={b.id}>
+                <div className="list-head">
+                  <h3>{b.name}</h3>
                   <span className="badge badge-neutral">{tx.region[b.region]}</span>
                 </div>
-                <dl className="kv small">
-                  <dt>{t.city}</dt><dd>{PLACES[b.city].label}</dd>
-                  <dt>{t.bv.website}</dt><dd><Todo>{t.todoSource}</Todo></dd>
-                  <dt>{t.contact}</dt><dd>{t.nameTba}</dd>
+                <p className="muted small" style={{ margin: 0 }}>{b.official}</p>
+                <dl className="kv">
+                  <dt>{t.bv.address}</dt><dd>{b.address}</dd>
+                  <dt>{t.bv.phone}</dt><dd>{b.phone}</dd>
+                  <dt>{t.bv.email}</dt><dd><a href={`mailto:${b.email}`}>{b.email}</a></dd>
+                  <dt>{t.bv.website}</dt><dd><a href={b.website} target="_blank" rel="noopener noreferrer">{b.website.replace(/^https:\/\/(www\.)?/, '').replace(/\/.*$/, '')}</a></dd>
+                  {groups.length > 0 && (<><dt>{t.hsg.title}</dt><dd>{groups.map((h) => h.university).join(', ')}</dd></>)}
                 </dl>
-                <div>
-                  <h4 style={{ fontSize: '1rem' }}>{t.upcoming}</h4>
-                  {ev.length === 0 ? (
-                    <p className="small muted">{t.noUpcoming}</p>
-                  ) : (
+                {ev.length > 0 && (
+                  <div>
+                    <h4>{t.upcoming}</h4>
                     <ul className="grid" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                       {ev.slice(0, 3).map((e) => <li key={e.id}><EventCard event={e} /></li>)}
                     </ul>
-                  )}
-                  <p className="small" style={{ marginTop: 'var(--space-3)' }}>
-                    <Link to={lp(`/events?region=${b.id}`)}>{t.showAll} →</Link>
-                  </p>
-                </div>
+                    <p style={{ marginTop: 'var(--space-4)' }}>
+                      <Link className="more" to={lp(`/events?region=${b.id}`)}>{t.showAll}</Link>
+                    </p>
+                  </div>
+                )}
               </li>
             )
           })}

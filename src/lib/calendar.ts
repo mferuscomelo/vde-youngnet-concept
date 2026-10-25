@@ -3,7 +3,8 @@ import { buildICS, eventToItem, addDays, compactDate } from './ics.js'
 import type { HubEvent } from './events'
 import { placeLabel } from './places'
 
-const origin = () => (typeof window !== 'undefined' ? window.location.origin : '')
+// Site root including the base path, e.g. https://user.github.io/repo
+const origin = () => (typeof window !== 'undefined' ? window.location.origin + import.meta.env.BASE_URL.replace(/\/$/, '') : '')
 
 export function icsForEvents(events: HubEvent[], lang: Lang, name: string): string {
   return buildICS(events.map((e) => eventToItem(e, { lang, origin: origin(), placeLabel: (k) => placeLabel(k) ?? k })), { name })

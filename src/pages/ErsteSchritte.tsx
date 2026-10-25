@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { PageHeader } from '../components/Badges'
+import { Icon } from '../components/Icon'
 import { fmt, useLp, useT } from '../i18n'
 import { common } from '../i18n/common'
 import { onboarding } from '../i18n/onboarding'
@@ -27,7 +28,7 @@ export default function ErsteSchritte() {
   return (
     <>
       <PageHeader title={t.title} lead={t.lead} />
-      {!canStore && <p className="notice notice-warning">{c.storageOff}</p>}
+      {!canStore && <p className="notice">{c.storageOff}</p>}
 
       <div className="tabs" role="tablist" aria-label={t.trackLabel}>
         {(['students', 'yp'] as Track[]).map((k) => (
@@ -41,7 +42,7 @@ export default function ErsteSchritte() {
             aria-controls="onboarding-panel"
             onClick={() => setState((s) => ({ ...s, track: k }))}
           >
-            {k === 'students' ? `🎓 ${t.students}` : `💼 ${t.yp}`}
+            {k === 'students' ? t.students : t.yp}
           </button>
         ))}
       </div>
@@ -60,17 +61,17 @@ export default function ErsteSchritte() {
           {items.map((i) => {
             const checked = state.done.includes(i.id)
             return (
-              <li key={i.id} className={`card ${checked ? 'card-muted' : ''}`}>
+              <li key={i.id} className="card">
                 <label className="checkbox" style={{ cursor: 'pointer' }}>
                   <input type="checkbox" checked={checked} onChange={() => toggle(i.id)} />
                   <span>
-                    <span className="badge badge-neutral">{i.day}</span>{' '}
+                    <span className="meta-line">{i.day}</span>
                     <strong style={checked ? { textDecoration: 'line-through' } : undefined}>{i.title}</strong>
-                    <span className="small muted" style={{ display: 'block' }}>{i.text}</span>
+                    <span style={{ display: 'block' }}>{i.text}</span>
                   </span>
                 </label>
-                <div style={{ paddingLeft: 28, marginTop: 'var(--space-1)' }}>
-                  <Link to={lp(i.to)} className="small">{i.link} →</Link>
+                <div style={{ paddingLeft: 34, marginTop: 'var(--space-2)' }}>
+                  <Link to={lp(i.to)} className="more">{i.link}<Icon name="chevron-right" /></Link>
                 </div>
               </li>
             )
@@ -78,7 +79,7 @@ export default function ErsteSchritte() {
         </ul>
 
         <div>
-          <button type="button" className="btn btn-sm" onClick={() => setState((s) => ({ ...s, done: [] }))}>↺ {t.reset}</button>
+          <button type="button" className="btn" onClick={() => setState((s) => ({ ...s, done: [] }))}>{t.reset}</button>
         </div>
       </div>
     </>

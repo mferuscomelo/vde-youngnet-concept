@@ -3,3 +3,4 @@ dist
 .remember
 public/ics
 .wrangler
+tsconfig.tsbuildinfo

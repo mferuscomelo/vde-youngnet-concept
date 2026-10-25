@@ -1,7 +1,8 @@
 import { useEffect, useId, useMemo, useState, type FormEvent } from 'react'
 import { Link, useLocation, useSearchParams } from 'react-router-dom'
-import { AudienceBadge, PageHeader, SampleBadge } from '../components/Badges'
+import { AudienceBadge, PageHeader } from '../components/Badges'
 import { EventCard, useLocationLabel } from '../components/EventBits'
+import { Icon } from '../components/Icon'
 import { MapView } from '../components/MapView'
 import { fmt, useLang, useLp, useT, type Lang } from '../i18n'
 import { eventsT } from '../i18n/events'
@@ -74,7 +75,7 @@ function OriginPicker({ params, setParams }: { params: URLSearchParams; setParam
           <option value="">{params.get('ll') ? 'GPS' : t.originPick}</option>
           {Object.entries(PLACES).sort((a, b) => a[1].label.localeCompare(b[1].label)).map(([k, p]) => <option key={k} value={k}>{p.label}</option>)}
         </select>
-        <button type="button" className="btn btn-sm" onClick={geo} title={t.originGeo} aria-label={t.originGeo}>⌖</button>
+        <button type="button" className="btn btn-square" onClick={geo} title={t.originGeo} aria-label={t.originGeo}><Icon name="locate" /></button>
       </div>
       {geoFail && <span className="hint" role="status">{t.originGeoFail}</span>}
     </div>
@@ -147,11 +148,11 @@ function FilterPanel({ f, update, params, setParams }: {
         </div>
         {n > 0 && (
           <div>
-            <button type="button" className="btn btn-sm" onClick={() => {
+            <button type="button" className="btn" onClick={() => {
               const keep = new URLSearchParams()
               for (const k of ['view', 'tab', 'm', 'ort', 'll', 'sort']) { const v = params.get(k); if (v) keep.set(k, v) }
               setParams(keep)
-            }}>✕ {t.reset}</button>
+            }}>{t.reset}</button>
           </div>
         )}
       </div>
@@ -194,9 +195,9 @@ function CalendarView({ events, params, setParams }: { events: HubEvent[]; param
   return (
     <div className="stack">
       <div className="row-between">
-        <button type="button" className="btn btn-sm" onClick={() => setMonth(-1)} aria-label={t.prevMonth}>←</button>
-        <h2 aria-live="polite" style={{ margin: 0, fontSize: '1.25rem' }}>{monthLabel}</h2>
-        <button type="button" className="btn btn-sm" onClick={() => setMonth(1)} aria-label={t.nextMonth}>→</button>
+        <button type="button" className="btn btn-square" onClick={() => setMonth(-1)} aria-label={t.prevMonth}><Icon name="chevron-left" /></button>
+        <h2 aria-live="polite" style={{ margin: 0 }}>{monthLabel}</h2>
+        <button type="button" className="btn btn-square" onClick={() => setMonth(1)} aria-label={t.nextMonth}><Icon name="chevron-right" /></button>
       </div>
       <table className="cal">
         <caption className="visually-hidden">{monthLabel}</caption>
@@ -239,7 +240,7 @@ function EventsMap({ events }: { events: HubEvent[] }) {
       popup: (
         <div>
           <strong><Link to={lp(`/events/${e.slug}`)}>{title(e, lang)}</Link></strong><br />
-          {formatDateRange(e, lang)} · {loc(e)}<br />
+          {formatDateRange(e, lang)} | {loc(e)}<br />
           <AudienceBadge audience={e.audience} />
         </div>
       ),
@@ -251,10 +252,10 @@ function EventsMap({ events }: { events: HubEvent[] }) {
 function CopyButton({ text, label, done }: { text: string; label: string; done: string }) {
   const [ok, setOk] = useState(false)
   return (
-    <button type="button" className="btn btn-sm" onClick={async () => {
+    <button type="button" className="btn" onClick={async () => {
       try { await navigator.clipboard.writeText(text); setOk(true); setTimeout(() => setOk(false), 2000) } catch { window.prompt(label, text) }
     }}>
-      <span role="status">{ok ? `✓ ${done}` : label}</span>
+      <span role="status">{ok ? done : label}</span>
     </button>
   )
 }
@@ -263,18 +264,18 @@ function Subscribe({ filtered, lang }: { filtered: HubEvent[]; lang: Lang }) {
   const t = useT(eventsT).abo
   const feeds = ['all', 'young-professionals', 'students'] as const
   return (
-    <section id="abo" className="section card card-muted stack" aria-labelledby="abo-h">
-      <h2 id="abo-h">📅 {t.title}</h2>
-      <p className="muted">{t.text}</p>
-      <div className="grid">
+    <section id="abo" className="section stack" aria-labelledby="abo-h">
+      <h2 id="abo-h">{t.title}</h2>
+      <p>{t.text}</p>
+      <div className="grid-3">
         {feeds.map((k) => {
           const url = feedUrl(k, lang)
-          const name = `YoungNet Hub – ${t.feeds[k]}`
+          const name = `Young Net Hub – ${t.feeds[k]}`
           return (
-            <div key={k} className="card stack" style={{ gap: 'var(--space-2)' }}>
-              <h3>{t.feeds[k]}</h3>
-              <a className="btn btn-primary btn-sm" href={outlookSubscribeUrl(url, name)} target="_blank" rel="noopener noreferrer">{t.outlook}</a>
-              <a className="btn btn-sm" href={webcalUrl(url)}>{t.webcal}</a>
+            <div key={k} className="card stack" style={{ gap: 'var(--space-3)' }}>
+              <h3 className="list-head">{t.feeds[k]}</h3>
+              <a className="btn btn-primary" href={outlookSubscribeUrl(url, name)} target="_blank" rel="noopener noreferrer">{t.outlook}</a>
+              <a className="btn" href={webcalUrl(url)}>{t.webcal}</a>
               <CopyButton text={url} label={t.copy} done={t.copied} />
             </div>
           )
@@ -285,9 +286,9 @@ function Subscribe({ filtered, lang }: { filtered: HubEvent[]; lang: Lang }) {
         <h3>{t.filtered}</h3>
         <p className="small muted">{t.filteredText}</p>
         <div>
-          <button type="button" className="btn btn-sm" disabled={!filtered.length}
-            onClick={() => downloadICS('youngnet-hub-auswahl', icsForEvents(filtered, lang, 'YoungNet Hub (Konzept) – Auswahl'))}>
-            ⬇ {fmt(t.filteredBtn, { n: filtered.length })}
+          <button type="button" className="btn" disabled={!filtered.length}
+            onClick={() => downloadICS('youngnet-hub-auswahl', icsForEvents(filtered, lang, 'Young Net Hub (Konzept) – Auswahl'))}>
+            {fmt(t.filteredBtn, { n: filtered.length })}
           </button>
         </div>
       </div>
@@ -346,7 +347,7 @@ export default function Events() {
         <form role="search" className="search-bar" onSubmit={onSearch}>
           <label htmlFor="ev-q" className="visually-hidden">{t.search}</label>
           <input id="ev-q" type="search" value={q} placeholder={t.searchPlaceholder} onChange={(e) => setQ(e.target.value)} />
-          <button className="btn btn-primary" type="submit">{t.searchBtn}</button>
+          <button className="btn btn-cta" type="submit">{t.searchBtn}</button>
         </form>
 
         <div className="chips" aria-label={t.f.aud} role="group">
@@ -363,11 +364,11 @@ export default function Events() {
             {tx.format.online}
           </button>
           <button type="button" className="chip" aria-pressed={f.near} onClick={() => update({ near: !f.near })}>
-            📍 {t.near}{f.near && origin ? ` (${t.nearHint} ${origin.label})` : ''}
+            {t.near}{f.near && origin ? ` (${t.nearHint} ${origin.label})` : ''}
           </button>
         </div>
         {(f.near || f.sort === 'distance') && !origin && (
-          <div className="notice notice-info stack" style={{ gap: 'var(--space-2)' }}>
+          <div className="notice stack" style={{ gap: 'var(--space-2)' }}>
             <span className="small">{t.nearNeedsOrigin}</span>
             <OriginPicker params={params} setParams={setP} />
           </div>
@@ -376,7 +377,7 @@ export default function Events() {
         <FilterPanel f={f} update={update} params={params} setParams={setP} />
 
         <div className="row-between">
-          <p role="status" style={{ margin: 0, fontWeight: 600 }}>
+          <p role="status" style={{ margin: 0, fontWeight: 'var(--fw-medium)' }}>
             {list.length === 1 ? t.resultsOne : fmt(t.results, { n: list.length })}
           </p>
           <div className="row">
@@ -407,20 +408,17 @@ export default function Events() {
         ) : (
           <div className="grid">
             {list.map((e) => (
-              <div key={e.id} className="stack" style={{ gap: 0 }}>
-                <EventCard event={e} />
-                {e.recap && <p className="small" style={{ marginTop: 'var(--space-2)' }}><span className="badge badge-success">{t.recap}</span> <SampleBadge /></p>}
-              </div>
+              <EventCard key={e.id} event={e} />
             ))}
           </div>
         )}
 
-        {tab === 'upcoming' && <p className="small muted">{t.pastHidden} <Link to={lp('/events?tab=archiv')}>{t.tabArchive} →</Link></p>}
+        {tab === 'upcoming' && <p className="small muted">{t.pastHidden} <Link className="more" to={lp('/events?tab=archiv')}>{t.tabArchive}<Icon name="chevron-right" size={18} /></Link></p>}
         <div className="row">
           <p className="small muted" style={{ margin: 0 }}>{t.shareHint}</p>
-          <button type="button" className="btn btn-sm" onClick={async () => {
+          <button type="button" className="btn" onClick={async () => {
             try { await navigator.clipboard.writeText(window.location.href); setCopied(true) } catch { /* clipboard blocked */ }
-          }}>🔗 {t.copyLink}</button>
+          }}>{t.copyLink}</button>
           <span role="status" className="small">{copied ? t.copied : ''}</span>
         </div>
       </div>

@@ -7,6 +7,7 @@ import { submitT } from '../i18n/submit'
 import { AUDIENCES, FORMATS, GOALS, TYPES, taxonomy } from '../i18n/taxonomy'
 import { useDemo } from '../lib/demoStore'
 import { todayISO, type Audience, type HubEvent } from '../lib/events'
+import { BVS } from '../data/directory'
 import { PLACES } from '../lib/places'
 
 type Draft = {
@@ -31,14 +32,8 @@ const EMPTY: Draft = {
   description: '', organizer: '', priceMember: '', priceNon: '', language: 'de', cover: 1,
 }
 
-const REGION_OF: Record<string, string> = {
-  hamburg: 'nord', hannover: 'nord', bremen: 'nord', kiel: 'nord', rostock: 'nord',
-  berlin: 'ost', dresden: 'ost', leipzig: 'ost', magdeburg: 'ost', erfurt: 'ost', ilmenau: 'ost',
-  aachen: 'west', koeln: 'west', dortmund: 'west',
-  darmstadt: 'mitte', frankfurt: 'mitte', kassel: 'mitte', saarbruecken: 'mitte',
-  karlsruhe: 'suedwest', stuttgart: 'suedwest', heidelberg: 'suedwest', freiburg: 'suedwest',
-  muenchen: 'sued', nuernberg: 'sued', wuerzburg: 'sued',
-}
+// Region of each place, derived from the Bezirksverein in that city
+const REGION_OF: Record<string, string> = Object.fromEntries(BVS.map((b) => [b.city, b.region]))
 
 function slugify(s: string): string {
   return s.toLowerCase().replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
@@ -82,26 +77,26 @@ function Done({ id }: { id: string }) {
   return (
     <div className="stack" style={{ maxWidth: 640 }}>
       {published ? (
-        <div className="notice notice-success stack" role="status">
-          <h2 style={{ margin: 0 }}>✓ {t.done.publishedTitle}</h2>
+        <div className="notice stack" role="status">
+          <h2 className="panel-title">{t.done.publishedTitle}</h2>
           {tm?.approvedAt && (
-            <p className="stat" style={{ fontSize: 'clamp(1.35rem, 4vw, 2rem)', margin: 0 }}>
+            <p className="stat" style={{ margin: 0 }}>
               {fmt(t.done.publishedIn, { time: formatDuration(tm.approvedAt - tm.submittedAt, t) })}
             </p>
           )}
           <p className="small" style={{ margin: 0 }}>{t.done.publishedText}</p>
         </div>
       ) : (
-        <div className="notice notice-info stack" role="status">
-          <h2 style={{ margin: 0 }}>⏳ {e.status === 'changes' ? t.done.changes : t.done.title}</h2>
+        <div className="notice stack" role="status">
+          <h2 className="panel-title">{e.status === 'changes' ? t.done.changes : t.done.title}</h2>
           <p style={{ margin: 0 }}>{t.done.text}</p>
         </div>
       )}
       <EventCard event={e} showStatus />
       <div className="row">
-        {!published && <button type="button" className="btn btn-success" onClick={() => approve(id)}>✓ {t.done.approveHere}</button>}
+        {!published && <button type="button" className="btn btn-success" onClick={() => approve(id)}>{t.done.approveHere}</button>}
         {!published && <Link className="btn" to={lp('/organizer')}>{t.done.toQueue}</Link>}
-        {published && <Link className="btn btn-primary" to={lp(`/events/${e.slug}`)}>{t.done.view}</Link>}
+        {published && <Link className="btn btn-cta" to={lp(`/events/${e.slug}`)}>{t.done.view}</Link>}
         <Link className="btn" to={lp('/einreichen')}>{t.done.another}</Link>
       </div>
     </div>
@@ -133,7 +128,7 @@ export default function Submit() {
   }
   const hasErrors = Object.values(invalid).some(Boolean)
   const err = (k: keyof typeof invalid) => (tried && invalid[k] ? { 'aria-invalid': true as const, 'aria-describedby': `${k}-err` } : {})
-  const errMsg = (k: keyof typeof invalid) => tried && invalid[k] && <span id={`${k}-err`} className="small" style={{ color: 'var(--color-danger)' }}>{t.required}</span>
+  const errMsg = (k: keyof typeof invalid) => tried && invalid[k] && <span id={`${k}-err`} className="small" style={{ color: 'var(--color-error)' }}>{t.required}</span>
 
   const onSubmit = (ev: FormEvent) => {
     ev.preventDefault()
@@ -160,7 +155,7 @@ export default function Submit() {
   }
 
   const preview = toEvent(d, 'preview', lang, t.placeholderTitle)
-  const req = <span aria-hidden="true" style={{ color: 'var(--color-danger)' }}> *</span>
+  const req = <span aria-hidden="true" style={{ color: 'var(--color-error)' }}> *</span>
 
   return (
     <>
@@ -168,7 +163,7 @@ export default function Submit() {
       <div className="grid-2 wide-left">
         <form onSubmit={onSubmit} noValidate className="stack" aria-labelledby="form-h">
           <h2 id="form-h" className="visually-hidden">{t.form}</h2>
-          {tried && hasErrors && <p className="notice notice-warning" role="alert">{t.errors}</p>}
+          {tried && hasErrors && <p className="notice" role="alert">{t.errors}</p>}
 
           <div className="field">
             <label htmlFor="s-title">1. {t.f.title}{req}</label>
@@ -280,8 +275,8 @@ export default function Submit() {
                 <label key={n} style={{ cursor: 'pointer' }}>
                   <input type="radio" name="cover" className="visually-hidden" checked={d.cover === n} onChange={() => set('cover', n)} />
                   <span className={`cover-${n}`} style={{
-                    display: 'block', width: 64, height: 40, borderRadius: 'var(--radius-md)',
-                    outline: d.cover === n ? '3px solid var(--color-text)' : '1px solid var(--color-border)', outlineOffset: 2,
+                    display: 'block', width: 64, height: 40,
+                    outline: d.cover === n ? '3px solid var(--color-blue)' : '1px solid var(--color-rule)', outlineOffset: 2,
                   }} />
                   <span className="visually-hidden">{fmt(t.f.coverN, { n })}</span>
                 </label>
@@ -290,14 +285,14 @@ export default function Submit() {
           </fieldset>
 
           <div>
-            <button type="submit" className="btn btn-primary">{t.submit}</button>
+            <button type="submit" className="btn btn-cta">{t.submit}</button>
           </div>
           <p className="small muted">{t.storedLocally}</p>
         </form>
 
         <aside aria-labelledby="pv-h" className="stack">
           <div style={{ position: 'sticky', top: 48 }} className="stack">
-            <h2 id="pv-h" style={{ fontSize: '1.125rem', margin: 0 }}>{t.preview}</h2>
+            <h2 id="pv-h" className="panel-title">{t.preview}</h2>
             <p className="small muted" style={{ margin: 0 }}>{t.previewHint}</p>
             <div aria-live="polite"><EventCard event={preview} preview /></div>
             {d.description && <p className="small card">{d.description}</p>}

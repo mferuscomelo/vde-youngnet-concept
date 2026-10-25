@@ -1,4 +1,4 @@
-// City coordinates (public geographic facts) used to place events and sample entries on the map.
+// City coordinates (public geographic facts) used to place events, groups and offices on the map.
 export type Place = { label: string; lat: number; lng: number }
 
 export const PLACES: Record<string, Place> = {
@@ -21,12 +21,42 @@ export const PLACES: Record<string, Place> = {
   dortmund: { label: 'Dortmund', lat: 51.5136, lng: 7.4653 },
   kiel: { label: 'Kiel', lat: 54.3233, lng: 10.1228 },
   rostock: { label: 'Rostock', lat: 54.0924, lng: 12.0991 },
+  luebeck: { label: 'Lübeck', lat: 53.8655, lng: 10.6866 },
   magdeburg: { label: 'Magdeburg', lat: 52.1205, lng: 11.6276 },
   erfurt: { label: 'Erfurt', lat: 50.9848, lng: 11.0299 },
   freiburg: { label: 'Freiburg', lat: 47.999, lng: 7.8421 },
   saarbruecken: { label: 'Saarbrücken', lat: 49.2402, lng: 6.9969 },
   kassel: { label: 'Kassel', lat: 51.3127, lng: 9.4797 },
   ilmenau: { label: 'Ilmenau', lat: 50.6839, lng: 10.9196 },
+  bielefeld: { label: 'Bielefeld', lat: 52.0302, lng: 8.5325 },
+  braunschweig: { label: 'Braunschweig', lat: 52.2689, lng: 10.5268 },
+  chemnitz: { label: 'Chemnitz', lat: 50.8278, lng: 12.9214 },
+  cottbus: { label: 'Cottbus', lat: 51.7563, lng: 14.3329 },
+  duesseldorf: { label: 'Düsseldorf', lat: 51.2277, lng: 6.7735 },
+  essen: { label: 'Essen', lat: 51.4556, lng: 7.0116 },
+  krefeld: { label: 'Krefeld', lat: 51.3388, lng: 6.5853 },
+  mannheim: { label: 'Mannheim', lat: 49.4875, lng: 8.466 },
+  osnabrueck: { label: 'Osnabrück', lat: 52.2799, lng: 8.0472 },
+  trier: { label: 'Trier', lat: 49.7499, lng: 6.6371 },
+  wuppertal: { label: 'Wuppertal', lat: 51.2562, lng: 7.1508 },
+  kaiserslautern: { label: 'Kaiserslautern', lat: 49.4401, lng: 7.7491 },
+  konstanz: { label: 'Konstanz', lat: 47.6779, lng: 9.1732 },
+  ulm: { label: 'Ulm', lat: 48.4011, lng: 9.9876 },
+  offenburg: { label: 'Offenburg', lat: 48.4723, lng: 7.9442 },
+  merseburg: { label: 'Merseburg', lat: 51.3547, lng: 11.9928 },
+  zwickau: { label: 'Zwickau', lat: 50.7189, lng: 12.4964 },
+  bochum: { label: 'Bochum', lat: 51.4818, lng: 7.2162 },
+  steinfurt: { label: 'Steinfurt', lat: 52.1505, lng: 7.3364 },
+  hagen: { label: 'Hagen', lat: 51.3671, lng: 7.4633 },
+  wilhelmshaven: { label: 'Wilhelmshaven', lat: 53.5299, lng: 8.1124 },
+  wolfenbuettel: { label: 'Wolfenbüttel', lat: 52.1625, lng: 10.5371 },
+  augsburg: { label: 'Augsburg', lat: 48.3705, lng: 10.8978 },
+  bayreuth: { label: 'Bayreuth', lat: 49.9456, lng: 11.5713 },
+  erlangen: { label: 'Erlangen', lat: 49.5897, lng: 11.0078 },
+  ingolstadt: { label: 'Ingolstadt', lat: 48.7665, lng: 11.4258 },
+  landshut: { label: 'Landshut', lat: 48.5442, lng: 12.1469 },
+  regensburg: { label: 'Regensburg', lat: 49.0134, lng: 12.1016 },
+  schweinfurt: { label: 'Schweinfurt', lat: 50.0492, lng: 10.2218 },
 }
 
 export function placeLabel(key: string | null): string | null {

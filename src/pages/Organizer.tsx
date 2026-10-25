@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { AudienceBadge, PageHeader, SampleBadge } from '../components/Badges'
+import { Icon } from '../components/Icon'
+import { AudienceBadge, PageHeader } from '../components/Badges'
 import { useLocationLabel } from '../components/EventBits'
 import { fmt, useLang, useLp, useT } from '../i18n'
 import { organizerT, submitT } from '../i18n/submit'
@@ -26,10 +27,10 @@ export default function Organizer() {
   return (
     <>
       <PageHeader title={t.title} lead={t.lead}>
-        <p className="notice notice-warning small">{t.demoNote}</p>
+        <p className="notice small">{t.demoNote}</p>
       </PageHeader>
 
-      <p role="status" aria-live="polite" className={toast ? 'notice notice-success' : 'visually-hidden'}>{toast}</p>
+      <p role="status" aria-live="polite" className={toast ? 'notice' : 'visually-hidden'}>{toast}</p>
 
       <section aria-labelledby="q-h" className="stack">
         <h2 id="q-h">{t.queue} <span className="badge badge-warning">{queue.length}</span></h2>
@@ -38,27 +39,26 @@ export default function Organizer() {
           {queue.map((e) => {
             const missingLoc = e.format === 'praesenz' && !e.location
             return (
-              <li key={e.id} className="card stack" style={{ gap: 'var(--space-2)', borderLeft: `4px solid var(--color-${e.status === 'changes' ? 'danger' : 'warning'})` }}>
-                <div className="row" style={{ gap: 6 }}>
+              <li key={e.id} className="notice stack" style={{ gap: 'var(--space-3)' }}>
+                <div className="badges">
                   <span className={`badge ${e.status === 'changes' ? 'badge-danger' : 'badge-warning'}`}>{tx.status[e.status]}</span>
                   <AudienceBadge audience={e.audience} />
-                  <span className="badge badge-neutral">{tx.type[e.type]}</span>
                   {missingLoc && <span className="badge badge-danger">{t.missing}: {t.missingLocation}</span>}
                 </div>
-                <h3 style={{ margin: 0 }}>{title(e, lang)}</h3>
-                <p className="small muted" style={{ margin: 0 }}>
-                  {formatDateRange(e, lang)} · {loc(e)} · {t.submittedBy}: {e.source === 'submitted' ? t.fromSubmit : t.fromNotion}
+                <h3 className="panel-title">{title(e, lang)}</h3>
+                <p className="meta-line">
+                  <span>{formatDateRange(e, lang)}</span><span>{loc(e)}</span><span>{tx.type[e.type]}</span><span>{t.submittedBy}: {e.source === 'submitted' ? t.fromSubmit : t.fromNotion}</span>
                 </p>
                 <div className="row">
-                  <button type="button" className="btn btn-success btn-sm" onClick={() => { approve(e.id); setToast(fmt(t.approvedToast, { title: title(e, lang) })) }}>
-                    ✓ {t.approve}
+                  <button type="button" className="btn btn-success" onClick={() => { approve(e.id); setToast(fmt(t.approvedToast, { title: title(e, lang) })) }}>
+                    {t.approve}
                   </button>
                   {e.status !== 'changes' && (
-                    <button type="button" className="btn btn-sm" onClick={() => { requestChanges(e.id); setToast(fmt(t.changesToast, { title: title(e, lang) })) }}>
-                      ✎ {t.changes}
+                    <button type="button" className="btn" onClick={() => { requestChanges(e.id); setToast(fmt(t.changesToast, { title: title(e, lang) })) }}>
+                      {t.changes}
                     </button>
                   )}
-                  <Link className="btn btn-sm btn-ghost" to={lp(`/events/${e.slug}`)}>{t.view} →</Link>
+                  <Link className="more" to={lp(`/events/${e.slug}`)}>{t.view}<Icon name="chevron-right" /></Link>
                 </div>
               </li>
             )
@@ -88,7 +88,7 @@ export default function Organizer() {
       <section className="section stack" aria-labelledby="s-h">
         <div className="row-between">
           <h2 id="s-h" style={{ margin: 0 }}>{t.stats}</h2>
-          <SampleBadge kind="mock" />
+          
         </div>
         <p className="small muted">{t.statsNote}</p>
         <div className="table-wrap">
@@ -102,7 +102,7 @@ export default function Organizer() {
                 return (
                   <tr key={e.id}>
                     <td><Link to={lp(`/events/${e.slug}`)}>{title(e, lang)}</Link></td>
-                    <td className="small" style={{ whiteSpace: 'nowrap' }}>{e.start}</td>
+                    <td className="small" style={{ whiteSpace: 'nowrap' }}>{formatDateRange(e, lang)}</td>
                     <td style={{ textAlign: 'right' }}>{s.views}</td>
                     <td style={{ textAlign: 'right' }}>{s.signups}</td>
                   </tr>

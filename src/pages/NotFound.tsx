@@ -10,7 +10,7 @@ export default function NotFound() {
     <>
       <PageHeader title={t.title} lead={t.lead} />
       <div className="row">
-        <Link className="btn btn-primary" to={lp('/')}>{t.home}</Link>
+        <Link className="btn btn-cta" to={lp('/')}>{t.home}</Link>
         <Link className="btn" to={lp('/events')}>{t.events}</Link>
       </div>
     </>

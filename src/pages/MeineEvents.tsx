@@ -24,14 +24,13 @@ export default function MeineEvents() {
   return (
     <>
       <PageHeader title={t.title} lead={t.lead} />
-      {!canStore && <p className="notice notice-warning">{c.storageOff}</p>}
+      {!canStore && <p className="notice">{c.storageOff}</p>}
 
       {saved.length === 0 ? (
-        <div className="card card-muted stack" style={{ textAlign: 'center', padding: 'var(--space-7) var(--space-4)' }}>
-          <span className="tile-icon" aria-hidden="true">☆</span>
-          <h2>{t.emptyTitle}</h2>
-          <p className="muted">{t.emptyText}</p>
-          <div><Link className="btn btn-primary" to={lp('/events')}>{t.browse}</Link></div>
+        <div className="card stack" style={{ padding: 'var(--space-6)' }}>
+          <h2 className="panel-title list-head">{t.emptyTitle}</h2>
+          <p>{t.emptyText}</p>
+          <div><Link className="btn btn-cta" to={lp('/events')}>{t.browse}</Link></div>
         </div>
       ) : (
         <>
@@ -45,7 +44,7 @@ export default function MeineEvents() {
                 aria-describedby="me-export-hint"
                 onClick={() => downloadICS('meine-events', icsForEvents(upcoming, lang, t.calName))}
               >
-                📅 {t.export}
+                {t.export}
               </button>
             </div>
             <p id="me-export-hint" className="small muted">{t.exportHint}</p>

@@ -9,7 +9,7 @@ const de = {
   format: { praesenz: 'Präsenz', online: 'Online', dezentral: 'Dezentral (alle BVs)' } as Record<string, string>,
   goal: { horizont: 'Horizont erweitern', networking: 'Networking', onboarding: 'Onboarding' } as Record<string, string>,
   region: {
-    nord: 'Nord', ost: 'Ost', west: 'West', mitte: 'Mitte', suedwest: 'Südwest', sued: 'Süd', bundesweit: 'Bundesweit / online',
+    hanse: 'Hanse', 'ost-mitte': 'Ost-Mitte', west: 'West', suedwest: 'Südwest', bayern: 'Bayern', bundesweit: 'Bundesweit / online',
   } as Record<string, string>,
   language: { de: 'Deutsch', en: 'Englisch' } as Record<string, string>,
   status: { published: 'Veröffentlicht', pending: 'Wartet auf Freigabe', changes: 'Änderungen angefragt' } as Record<string, string>,
@@ -23,7 +23,7 @@ const en: typeof de = {
   },
   format: { praesenz: 'In person', online: 'Online', dezentral: 'Decentralised (all districts)' },
   goal: { horizont: 'Broaden horizons', networking: 'Networking', onboarding: 'Onboarding' },
-  region: { nord: 'North', ost: 'East', west: 'West', mitte: 'Central', suedwest: 'South-West', sued: 'South', bundesweit: 'Nationwide / online' },
+  region: { hanse: 'Hanse (North)', 'ost-mitte': 'East-Central', west: 'West', suedwest: 'South-West', bayern: 'Bavaria', bundesweit: 'Nationwide / online' },
   language: { de: 'German', en: 'English' },
   status: { published: 'Published', pending: 'Awaiting approval', changes: 'Changes requested' },
 }
@@ -34,5 +34,6 @@ export const AUDIENCES = ['students', 'young-professionals', 'all'] as const
 export const TYPES = ['stammtisch', 'workshop', 'junges-forum', 'kongress', 'yp-meetup', 'regional', 'hackathon', 'exkursion'] as const
 export const FORMATS = ['praesenz', 'online', 'dezentral'] as const
 export const GOALS = ['horizont', 'networking', 'onboarding'] as const
-export const REGIONS = ['nord', 'ost', 'west', 'mitte', 'suedwest', 'sued', 'bundesweit'] as const
+/** VDE Young Net regions as used on vde.com, plus nationwide */
+export const REGIONS = ['hanse', 'ost-mitte', 'west', 'suedwest', 'bayern', 'bundesweit'] as const
 export const FACHGESELLSCHAFTEN = ['ETG', 'ITG', 'GMM', 'GMA', 'DGBMT'] as const

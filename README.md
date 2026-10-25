@@ -1,42 +1,32 @@
-# YoungNet Hub – Konzept-Prototyp
+# VDE Young Net – Konzept-Prototyp
 
-Klickbarer Prototyp für einen bundesweiten VDE-YoungNet-Event-Hub. **Keine offizielle VDE-Website.** Alle Daten sind illustrativ.
+Ein klickbarer Entwurf, wie ein bundesweiter Hub für VDE Young Net aussehen könnte: alle Events an einem Ort, in Minuten veröffentlicht, klar nach Zielgruppe gefiltert.
+
+**Live:** <https://mferuscomelo.github.io/vde-youngnet-concept/>
+
+> **Keine offizielle VDE-Website.** Ein Vorschlag aus dem Ehrenamt, nicht mit dem VDE abgestimmt. Der Prototyp zeigt die Richtung in groben Zügen – im Detail ist sicher manches unfertig oder kaputt.
+
+## Feedback
+
+Dir fällt etwas auf oder du hast eine Idee? **Öffne einen Pull Request** – direkte Commits auf `main` sind gesperrt. Wie das geht: [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
 
 ## Lokal starten
 
 ```sh
 npm install
-npm run dev        # http://localhost:5173/de
-npm run build      # Typecheck + Produktions-Build nach dist/
+npm run dev     # http://localhost:5173/de
 ```
 
-`predev`/`prebuild` erzeugen die abonnierbaren ICS-Feeds in `public/ics/` aus `src/data/events.json`.
-Mit `HUB_ORIGIN=https://<host> npm run build` enthalten die Feed-Einträge Links zurück auf die Event-Seiten.
+## Dokumentation
 
-## Aufbau
-
-| Pfad | Inhalt |
+| Dokument | Inhalt |
 |---|---|
-| `src/styles/tokens.css` | **Brand-Slot**: alle Farben, Schriften, Radien, Abstände. Neutral, bewusst kein VDE-Corporate-Design. |
-| `src/components/Logo.tsx` | **Brand-Slot**: Text-Wortmarke „YoungNet Hub (Konzept)“. |
-| `src/i18n/*.ts` | UI-Texte DE/EN, ein Namespace pro Bereich. |
-| `src/data/events.json` | Events. Erzeugt von `scripts/seed-events.mjs` (Notion-Export 25.10.2026 + markierte Beispiel-Events). |
-| `src/data/directory.ts` | Bezirksvereine, Hochschulgruppen, Ansprechpartner:innen, Fachgesellschaften – **nur Platzhalter**. |
-| `src/lib/demoStore.tsx` | Demo-Zustand (Einreichungen, Freigaben, Merkliste) im `localStorage`, mit try/catch. „Demo zurücksetzen“ im Footer. |
-| `src/lib/ics.js` | ICS-Erzeugung (Browser + Build-Skript). Ganztägige Termine, Outlook-kompatibel. |
-| `functions/_middleware.js` | Passwortschutz (Basic Auth) für Cloudflare Pages. |
+| [Konzept](docs/konzept.md) | Welche Probleme der Hub löst, was der Prototyp zeigt |
+| [Mitmachen](docs/CONTRIBUTING.md) | Pull Request erstellen, Schritt für Schritt |
+| [Aufbau](docs/aufbau.md) | Technik, Ordnerstruktur, Datenquellen |
+| [Deployment](docs/deployment.md) | GitHub Pages, optional Cloudflare mit Passwort |
+| [Offene Punkte](docs/offene-punkte.md) | Bekannte Lücken und TODOs |
 
-## Privat deployen (Cloudflare Pages)
+## Rechte
 
-1. Pages-Projekt anlegen, Build-Befehl `npm run build`, Output `dist`.
-2. Umgebungsvariablen: `HUB_PASSWORD` (verschlüsselt), optional `HUB_USER` (Standard `youngnet`), optional `HUB_ORIGIN`.
-3. Ohne `HUB_PASSWORD` liefert die Seite 503 – sie ist also nie versehentlich offen.
-
-Zusätzlich gesetzt: `<meta name="robots" content="noindex, nofollow">`, `robots.txt` mit `Disallow: /`, `X-Robots-Tag`-Header.
-
-## Offene TODOs (Daten)
-
-- BV- und HSG-Liste, Ansprechpartner:innen, Mitgliedsbeiträge aus vde.com übernehmen (im UI als `TODO` markiert).
-- Namen/Beschreibungen der Fachgesellschaften auf vde.com prüfen.
-- Preise, Uhrzeiten und fehlende Orte der Notion-Events ergänzen.
-- ICS-Import in Outlook (Desktop + Web) manuell testen.
+VDE-Logo, Wortmarke und Fotos gehören dem VDE (Quelle: vde.com) und sind nur zur Veranschaulichung eingebunden. Sie sind nicht Teil einer freien Lizenz.

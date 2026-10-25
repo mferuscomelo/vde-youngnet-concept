@@ -53,7 +53,7 @@ export function buildICS(items, { name, now = new Date() }) {
   const lines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//YoungNet Hub Konzept-Prototyp//DE',
+    'PRODID:-//Young Net Hub Konzept-Prototyp//DE',
     'CALSCALE:GREGORIAN',
     'METHOD:PUBLISH',
     `X-WR-CALNAME:${escapeText(name)}`,
@@ -83,13 +83,12 @@ export function buildICS(items, { name, now = new Date() }) {
 export function eventToItem(e, { lang = 'de', origin = '', placeLabel = (k) => k } = {}) {
   const loc = e.location === 'online' ? 'Online' : e.location === 'alle-bvs' ? (lang === 'de' ? 'Alle Bezirksvereine' : 'All districts') : e.location ? placeLabel(e.location) : lang === 'de' ? 'Ort folgt' : 'Location TBA'
   const url = origin ? `${origin}/${lang}/events/${e.slug}` : undefined
-  const prefix = lang === 'de' ? '[Konzept-Prototyp, Beispieldaten] ' : '[Concept prototype, sample data] '
   return {
     uid: `${e.id}@youngnet-hub.concept`,
     start: e.start,
     end: e.end,
     summary: lang === 'en' ? e.title_en : e.title_de,
-    description: prefix + (lang === 'en' ? e.description_en : e.description_de) + (url ? `\n\n${url}` : ''),
+    description: (lang === 'en' ? e.description_en : e.description_de) + (url ? `\n\n${url}` : ''),
     location: loc,
     url,
   }

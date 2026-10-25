@@ -19,7 +19,7 @@ export async function onRequest({ request, env, next }) {
   if (!authorised) {
     return new Response('Konzept-Prototyp – Zugang nur mit Passwort.', {
       status: 401,
-      headers: { 'WWW-Authenticate': 'Basic realm="YoungNet Hub Konzept", charset="UTF-8"', 'X-Robots-Tag': 'noindex, nofollow' },
+      headers: { 'WWW-Authenticate': 'Basic realm="Young Net Hub Konzept", charset="UTF-8"', 'X-Robots-Tag': 'noindex, nofollow' },
     })
   }
   const res = await next()
