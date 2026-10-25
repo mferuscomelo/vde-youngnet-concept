@@ -1,0 +1,63 @@
+import type { Dict } from '.'
+
+const de = {
+  title: 'Mitgliedschaft – lohnt sich das?',
+  lead: 'Eine ehrliche Übersicht: was du als Mitglied bekommst, was es kostet und wo du es im Alltag merkst.',
+  benefitsTitle: 'Was Mitglieder bekommen',
+  benefits: [
+    ['🎟', 'Günstigere Events', 'Viele Workshops, Exkursionen und Kongresse sind für Mitglieder kostenlos oder deutlich günstiger. Unten siehst du konkrete Beispiele.'],
+    ['🤝', 'Netzwerk vor Ort und bundesweit', 'Zugang zu Stammtischen, Hochschulgruppen, Bezirksvereinen und Fachgesellschaften – mit Menschen, die vor denselben Fragen stehen.'],
+    ['🧭', 'Mentoring', 'Studierende finden Young Professionals, Young Professionals finden erfahrene Mitglieder als Mentor:innen.'],
+    ['📚', 'Fachwissen', 'Junge Foren, Fachtagungen und Publikationen der Fachgesellschaften.'],
+    ['🛠', 'Selbst gestalten', 'Eigene Events organisieren, mit Unterstützung, Vorlagen und Reichweite.'],
+  ] as [string, string, string][],
+  benefitsNote: 'Die genaue Leistungsliste muss mit dem VDE abgestimmt werden.',
+  feesTitle: 'Was kostet es?',
+  feeStudents: 'Studierende',
+  feeYp: 'Young Professionals',
+  perYear: 'pro Jahr',
+  feeTodo: 'Beiträge aus vde.com übernehmen',
+  feesNote: 'Dieser Prototyp nennt bewusst keine Preise, solange sie nicht aus offizieller Quelle übernommen sind.',
+  join: 'Mitglied werden auf vde.com',
+  external: '(externer Link, öffnet in neuem Tab)',
+  cheaperTitle: 'Events, die du als Mitglied günstiger bekommst',
+  cheaperLead: 'Automatisch aus den Event-Daten berechnet.',
+  cheaperNone: 'Aktuell keine kommenden Events mit Mitgliederpreis.',
+  colEvent: 'Event',
+  colDate: 'Datum',
+  colMember: 'Mitglieder',
+  colNon: 'Nicht-Mitglieder',
+  save: 'Du sparst {amount}',
+}
+
+const en: typeof de = {
+  title: 'Membership – is it worth it?',
+  lead: 'An honest overview: what you get as a member, what it costs and where you notice it day to day.',
+  benefitsTitle: 'What members get',
+  benefits: [
+    ['🎟', 'Cheaper events', 'Many workshops, excursions and congresses are free or much cheaper for members. See concrete examples below.'],
+    ['🤝', 'Local and nationwide network', 'Access to meetups, student groups, districts and technical societies – with people facing the same questions.'],
+    ['🧭', 'Mentoring', 'Students find young professionals, young professionals find experienced members as mentors.'],
+    ['📚', 'Expertise', 'Young forums, conferences and publications of the technical societies.'],
+    ['🛠', 'Shape it yourself', 'Organise your own events, with support, templates and reach.'],
+  ],
+  benefitsNote: 'The exact list of benefits needs to be agreed with VDE.',
+  feesTitle: 'What does it cost?',
+  feeStudents: 'Students',
+  feeYp: 'Young professionals',
+  perYear: 'per year',
+  feeTodo: 'take fees from vde.com',
+  feesNote: 'This prototype deliberately shows no prices until they are taken from an official source.',
+  join: 'Become a member on vde.com',
+  external: '(external link, opens in a new tab)',
+  cheaperTitle: 'Events that are cheaper for members',
+  cheaperLead: 'Calculated automatically from the event data.',
+  cheaperNone: 'No upcoming events with a member price at the moment.',
+  colEvent: 'Event',
+  colDate: 'Date',
+  colMember: 'Members',
+  colNon: 'Non-members',
+  save: 'You save {amount}',
+}
+
+export const membership: Dict<typeof de> = { de, en }
